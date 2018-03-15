@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>SmartNinja basic Jinja template</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+    <h1>Današnje vreme</h1>
+    {% if vreme.cod == "404" %}
+    <p>Meritev v tem mestu ne izvajamo.</p>
+    {% else %}
+    {{vreme.name}}:{{ vreme.main.temp }}
+    {% endif %}
+    <form method="get">
+        <input name="mesto">
+        <button type="submit">Klikni</button>
+    </form>
+</body>
+</html>

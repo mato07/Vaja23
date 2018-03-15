@@ -2,6 +2,9 @@
 import os
 import jinja2
 import webapp2
+import json
+
+from google.appengine.api import urlfetch
 
 
 template_dir = os.path.join(os.path.dirname(__file__), "templates")
@@ -29,8 +32,22 @@ class BaseHandler(webapp2.RequestHandler):
 
 class MainHandler(BaseHandler):
     def get(self):
-        return self.render_template("hello.html")
+        f = open("people.json", "r")
+        podatki = f.read()
+        ljudje = json.loads(podatki)
+        params = {"seznam": ljudje}
+        return self.render_template("hello.html", params=params)
+
+class VremeHandler(BaseHandler):
+    def get(self):
+        zeljeno_mesto = self.request.get("mesto")
+        url = "http://api.openweathermap.org/data/2.5/weather?q=" + zeljeno_mesto + "&units=metric&appid=bc404a534664f0682a9e960d80ad241f" # noter smo dodali & units=metric
+        stran = urlfetch.fetch(url).content
+        vreme = json.loads(stran)
+        params = {"vreme":vreme}
+        return self.render_template("vreme.html", params=params)
 
 app = webapp2.WSGIApplication([
     webapp2.Route('/', MainHandler),
+    webapp2.Route('/vreme', VremeHandler),
 ], debug=True)
